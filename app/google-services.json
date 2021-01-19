@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "538264741234",
+    "project_id": "absensijagad",
+    "storage_bucket": "absensijagad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:538264741234:android:80bd23fc10fd4d9328a9eb",
+        "android_client_info": {
+          "package_name": "org.d3ifcool.absensijagad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "538264741234-nd0c1ul2r9ob8jjfdb9nttqju1b67b8d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.d3ifcool.absensijagad",
+            "certificate_hash": "f64f1043ead8be9f52e5d680726fb0e0744113da"
+          }
+        },
+        {
+          "client_id": "538264741234-0luje17u5l46l814m765o6hqk4u2lman.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtla6EcaZOunsM84CTINsRuYdSLIMKKi0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "538264741234-0luje17u5l46l814m765o6hqk4u2lman.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
