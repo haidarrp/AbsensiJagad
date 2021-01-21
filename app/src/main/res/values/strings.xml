@@ -5,4 +5,9 @@
     <string name="sign_up"><a href="https://learntodroid.com">Sign Up</a></string>
     <string name="login">LOGIN</string>
     <string name="logout">LOGOUT</string>
+    <string name="login_btn">LOGIN</string>
+    <string name="signup_btn">Sign Up</string>
+    <string name="password_hint">Password</string>
+    <string name="email_hint">email</string>
+    <string name="name_hint">Nama</string>
 </resources>

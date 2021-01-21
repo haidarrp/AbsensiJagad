@@ -17,6 +17,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        registerTxt.setOnClickListener(View.OnClickListener {
+            val intent = Intent(this, Register::class.java)
+            startActivity(intent)
+        })
         login.setOnClickListener {
             val emailTxt = findViewById<View>(R.id.editTextTextEmailAddress) as EditText
             var email = emailTxt.text.toString()
