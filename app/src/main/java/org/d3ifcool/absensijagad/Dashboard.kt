@@ -10,15 +10,18 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_dashboard.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 class Dashboard : AppCompatActivity() {
@@ -55,6 +58,7 @@ class Dashboard : AppCompatActivity() {
         }
         submit_btn.setOnClickListener {
             image_uri?.let { it1 -> uploadImageToFirebase(it1) }
+
         }
     }
     private fun openCamera() {
@@ -107,8 +111,15 @@ class Dashboard : AppCompatActivity() {
                         taskSnapshot.storage.downloadUrl.addOnSuccessListener {
                             val imageUrl = it.toString()
                             val desc = editTextDescription.text.toString()
-
-                            val user = Karyawan(imageUrl,desc)
+                            val loggedInUser = FirebaseAuth.getInstance().currentUser
+                            loggedInUser?.let {
+                                val email = loggedInUser.email
+                            }
+                            val email = loggedInUser?.email
+                            val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+                            val currentDate = sdf.format(Date()).toString()
+                            val user = Karyawan(imageUrl, desc, email , currentDate)
+                            Log.d("cekbaidar", email+" "+currentDate)
                             val userId = ref.push().key.toString()
 
                             ref.child(userId).setValue(user).addOnCompleteListener {

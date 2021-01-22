@@ -1,5 +1,6 @@
 package org.d3ifcool.absensijagad
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -30,9 +31,11 @@ class MainActivity : AppCompatActivity() {
                 .addOnCompleteListener {
 
                     if (!it.isSuccessful) {
+
                         return@addOnCompleteListener
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
+
                     } else
                         Toast.makeText(this, "Succesfully Login", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, Dashboard::class.java)
