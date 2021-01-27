@@ -1,6 +1,6 @@
 package org.d3ifcool.absensijagad
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -40,6 +39,7 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this, "Succesfully Login", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, Dashboard::class.java)
                     startActivity(intent)
+                    finish()
                 }
                 .addOnFailureListener {
                     Log.d("Main", "Failed Login: ${it.message}")
@@ -47,4 +47,6 @@ class MainActivity : AppCompatActivity() {
                 }
         }
     }
+
+
 }
