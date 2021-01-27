@@ -5,13 +5,15 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.drawable.AnimationDrawable
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
+import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.firebase.ui.auth.AuthUI
@@ -32,6 +34,8 @@ class Dashboard : AppCompatActivity() {
     private val IMAGE_CAPTURE_CODE = 1001
     var image_uri: Uri? = null
     val authState = FirebaseUserLiveData()
+    private lateinit var loading:ProgressBar
+    private lateinit var submit:Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,6 +114,10 @@ class Dashboard : AppCompatActivity() {
     }
     private fun uploadImageToFirebase(fileUri: Uri) {
         if (fileUri != null) {
+            submit=findViewById(R.id.submit_btn)
+            submit.visibility=View.INVISIBLE
+            loading=findViewById(R.id.loading_panel)
+            loading.visibility=View.VISIBLE
             val fileName = UUID.randomUUID().toString() +".jpg"
 
             val database = FirebaseDatabase.getInstance()
@@ -133,6 +141,10 @@ class Dashboard : AppCompatActivity() {
                             val userId = ref.push().key.toString()
 
                             ref.child(userId).setValue(user).addOnCompleteListener {
+                                submit=findViewById(R.id.submit_btn)
+                                submit.visibility=View.VISIBLE
+                                loading=findViewById(R.id.loading_panel)
+                                loading.visibility=View.INVISIBLE
                                 Toast.makeText(this, "Successs",Toast.LENGTH_SHORT).show()
                                 editTextDescription.setText("")
                                 image_view.setImageURI(null)
