@@ -13,6 +13,7 @@
         android:layout_height="59dp"
         android:layout_marginTop="92dp"
         android:text="JAGAD"
+        android:textColor="#414142"
         android:textSize="50sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,6 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="A T T E N D A N C E"
+        android:textColor="#414142"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="@+id/textView3"
         app:layout_constraintHorizontal_bias="1.0"
@@ -102,7 +104,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:text="OR"
-                android:textColor="#000000" />
+                android:textColor="#414142" />
 
             <View
                 android:layout_width="match_parent"
