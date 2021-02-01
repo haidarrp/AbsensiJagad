@@ -9,10 +9,10 @@
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="161dp"
-        android:layout_height="59dp"
+        android:layout_width="194dp"
+        android:layout_height="55dp"
         android:layout_marginTop="92dp"
-        android:text="JAGAD"
+        android:text="JAVORA"
         android:textColor="#414142"
         android:textSize="50sp"
         android:textStyle="bold"
