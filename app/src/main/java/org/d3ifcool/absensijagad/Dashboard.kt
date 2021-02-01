@@ -5,9 +5,9 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -15,8 +15,13 @@ import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.firebase.ui.auth.AuthUI
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
@@ -28,19 +33,23 @@ import kotlinx.android.synthetic.main.activity_dashboard.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class Dashboard : AppCompatActivity() {
+class Dashboard : AppCompatActivity(){
     lateinit var ref : DatabaseReference
     private val PERMISSION_CODE = 1000;
     private val IMAGE_CAPTURE_CODE = 1001
     var image_uri: Uri? = null
-    val authState = FirebaseUserLiveData()
     private lateinit var loading:ProgressBar
     private lateinit var submit:Button
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var map: GoogleMap
+    private val REQUEST_LOCATION_PERMISSION = 1
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
-
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         ref = FirebaseDatabase.getInstance().getReference("USERS")
         capture_btn.setOnClickListener {
             //if system os is Marshmallow or Above, we need to request runtime permission
@@ -82,6 +91,30 @@ class Dashboard : AppCompatActivity() {
                 finish()
             }
         }
+        getLocation_btn.setOnClickListener {
+            getLastKnownLocation()
+        }
+    }
+    fun getLastKnownLocation() {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // request permission
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION);
+            return
+        }
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location : Location? ->
+                // Got last known location. In some rare situations this can be null.
+                if (location != null) {
+                    latitude = location.latitude
+                }
+                if (location != null) {
+                    longitude = location.longitude
+                }
+                Log.d("userlocation", "Latitude: "+latitude+" Longtitude: "+longitude)
+            }
+
     }
     private fun openCamera() {
         val values = ContentValues()
@@ -94,20 +127,18 @@ class Dashboard : AppCompatActivity() {
         startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE)
     }
 
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         //called when user presses ALLOW or DENY from Permission Request Popup
-        when(requestCode){
-            PERMISSION_CODE -> {
-                if (grantResults.size > 0 && grantResults[0] ==
-                    PackageManager.PERMISSION_GRANTED){
-                    //permission from popup was granted
-                    openCamera()
-                }
-                else{
-                    //permission from popup was denied
-                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
-                }
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if (grantResults.size > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLastKnownLocation()
+            }
+        }
+        if (requestCode == PERMISSION_CODE ){
+            if (grantResults.size > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera()
             }
         }
     }
