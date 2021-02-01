@@ -69,13 +69,13 @@ class Dashboard : AppCompatActivity() {
 
         }
         logout_btn.setOnClickListener {
-            AuthUI.getInstance().signOut(this).addOnCompleteListener{
-                if (!it.isSuccessful){
+            AuthUI.getInstance().signOut(this).addOnCompleteListener {
+                if (!it.isSuccessful) {
                     return@addOnCompleteListener
-                    val intent = Intent(this,Dashboard::class.java)
+                    val intent = Intent(this, Dashboard::class.java)
                     startActivity(intent)
-                }else{
-                    Toast.makeText(this,"Logout Successfully",Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Logout Successfully", Toast.LENGTH_SHORT).show()
                 }
             }
             val intent = Intent(this, MainActivity::class.java)
