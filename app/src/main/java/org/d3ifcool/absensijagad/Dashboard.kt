@@ -74,13 +74,13 @@ class Dashboard : AppCompatActivity() {
                     return@addOnCompleteListener
                     val intent = Intent(this, Dashboard::class.java)
                     startActivity(intent)
-                } else {
-                    Toast.makeText(this, "Logout Successfully", Toast.LENGTH_SHORT).show()
-                }
+
+                } else
+                    Toast.makeText(this, "Logout Succesfully", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
             }
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
         }
     }
     private fun openCamera() {
@@ -169,9 +169,5 @@ class Dashboard : AppCompatActivity() {
                     print(e.message)
                 })
         }
-    }
-
-    private fun data (){
-
     }
 }

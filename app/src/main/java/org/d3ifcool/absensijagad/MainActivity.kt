@@ -3,7 +3,6 @@ package org.d3ifcool.absensijagad
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -17,18 +16,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        val loggedInUser = FirebaseAuth.getInstance().currentUser
+        if (loggedInUser!= null){
+            val intent = Intent(this, Dashboard::class.java)
+            startActivity(intent)
+            finish()
+        }
         registerTxt.setOnClickListener(View.OnClickListener {
             val intent = Intent(this, Register::class.java)
             startActivity(intent)
         })
-
-        val loggedInUser = FirebaseAuth.getInstance().currentUser
-            if (loggedInUser!=null){
-                val intent = Intent(this,Dashboard::class.java)
-                    startActivity(intent)
-                    finish()
-            }
-
         login.setOnClickListener {
             val emailTxt = findViewById<View>(R.id.editTextTextEmailAddress) as EditText
             var email = emailTxt.text.toString()
@@ -54,7 +52,6 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Email/Password incorrect", Toast.LENGTH_SHORT).show()
                 }
         }
-
     }
 
 
