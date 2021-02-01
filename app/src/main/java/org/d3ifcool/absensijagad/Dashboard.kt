@@ -69,10 +69,18 @@ class Dashboard : AppCompatActivity() {
 
         }
         logout_btn.setOnClickListener {
-            AuthUI.getInstance().signOut(this)
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
+            AuthUI.getInstance().signOut(this).addOnCompleteListener {
+                if (!it.isSuccessful) {
+                    return@addOnCompleteListener
+                    val intent = Intent(this, Dashboard::class.java)
+                    startActivity(intent)
+
+                } else
+                    Toast.makeText(this, "Logout Succesfully", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
     }
     private fun openCamera() {
@@ -161,9 +169,5 @@ class Dashboard : AppCompatActivity() {
                     print(e.message)
                 })
         }
-    }
-
-    private fun data (){
-
     }
 }

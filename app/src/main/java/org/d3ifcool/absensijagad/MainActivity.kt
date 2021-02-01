@@ -17,6 +17,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val loggedInUser = FirebaseAuth.getInstance().currentUser
+        if (loggedInUser!= null){
+            val intent = Intent(this, Dashboard::class.java)
+            startActivity(intent)
+            finish()
+        }
         registerTxt.setOnClickListener(View.OnClickListener {
             val intent = Intent(this, Register::class.java)
             startActivity(intent)
