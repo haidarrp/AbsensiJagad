@@ -45,6 +45,9 @@ class Dashboard : AppCompatActivity(){
     private val REQUEST_LOCATION_PERMISSION = 1
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
+    private var latitudeT: Double = -6.9527386
+    private var longitudeT: Double = 107.6651714
+    private var resultInMeter=0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +77,13 @@ class Dashboard : AppCompatActivity(){
             }
         }
         submit_btn.setOnClickListener {
-            image_uri?.let { it1 -> uploadImageToFirebase(it1) }
+            if (resultInMeter>100){
+                Toast.makeText(this, "!!DILUAR JANGKAUAN!!" +
+                        "Gagal menginput data", Toast.LENGTH_SHORT).show()
+            }else{
+                image_uri?.let { it1 -> uploadImageToFirebase(it1) }
+            }
+
 
         }
         logout_btn.setOnClickListener {
@@ -112,7 +121,27 @@ class Dashboard : AppCompatActivity(){
                 if (location != null) {
                     longitude = location.longitude
                 }
+                var lon1 = Math.toRadians(longitudeT)
+                var lon2 = Math.toRadians(longitude)
+                var lat1 = Math.toRadians(latitudeT)
+                var lat2 = Math.toRadians(latitude)
+
+                var dlon = lon2 - lon1
+                var dlat = lat2 - lat1
+
+                var a = Math.pow(Math.sin(dlat / 2), 2.0)+ Math.cos(lat1) * Math.cos(lat2)* Math.pow(Math.sin(dlon / 2), 2.0)
+                var c = 2 * Math.asin(Math.sqrt(a))
+                var r = 6371
+                var result = c*r
+                resultInMeter = result*1000
+
+                if (resultInMeter>= 100){
+                    Log.d("statusJarak","Gagal")
+                }else
+                    Log.d("statusJarak","Berhasil")
+
                 Log.d("userlocation", "Latitude: "+latitude+" Longtitude: "+longitude)
+                Log.d("Distance","jarak = "+resultInMeter+" M")
             }
 
     }
@@ -176,7 +205,7 @@ class Dashboard : AppCompatActivity(){
                             val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
                             val currentDate = sdf.format(Date()).toString()
                             val user = Karyawan(imageUrl, desc, email , currentDate)
-                            Log.d("cekbaidar", email+" "+currentDate)
+                            Log.d("cekpush", email+" "+currentDate)
                             val userId = ref.push().key.toString()
 
                             ref.child(userId).setValue(user).addOnCompleteListener {
