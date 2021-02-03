@@ -77,6 +77,7 @@ class Dashboard : AppCompatActivity(){
             }
         }
         submit_btn.setOnClickListener {
+            getLastKnownLocation()
             if (resultInMeter>100){
                 Toast.makeText(this, "!!DILUAR JANGKAUAN!!" +
                         "Gagal menginput data", Toast.LENGTH_SHORT).show()
@@ -99,9 +100,6 @@ class Dashboard : AppCompatActivity(){
                 startActivity(intent)
                 finish()
             }
-        }
-        getLocation_btn.setOnClickListener {
-            getLastKnownLocation()
         }
     }
     fun getLastKnownLocation() {
