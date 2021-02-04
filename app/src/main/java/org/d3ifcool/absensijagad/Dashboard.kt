@@ -3,13 +3,17 @@ package org.d3ifcool.absensijagad
 import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.provider.MediaStore
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -18,9 +22,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.location.LocationManagerCompat.isLocationEnabled
 import com.firebase.ui.auth.AuthUI
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
@@ -77,12 +81,18 @@ class Dashboard : AppCompatActivity(){
             }
         }
         submit_btn.setOnClickListener {
-            getLastKnownLocation()
+            getLastLocation()
             if (resultInMeter>100){
                 Toast.makeText(this, "!!DILUAR JANGKAUAN!!" +
                         "Gagal menginput data", Toast.LENGTH_SHORT).show()
             }else{
-                image_uri?.let { it1 -> uploadImageToFirebase(it1) }
+                var desc = editTextDescription.text.toString()
+                if (TextUtils.isEmpty(desc) || image_uri==null){
+                    Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_LONG).show()
+                }else{
+                    image_uri?.let { it1 -> uploadImageToFirebase(it1) }
+                }
+
             }
 
 
@@ -102,7 +112,60 @@ class Dashboard : AppCompatActivity(){
             }
         }
     }
-    fun getLastKnownLocation() {
+    fun getLastLocation(){
+        if(CheckPermission()){
+            if(isLocationEnabled()){
+                if (ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // request permission
+                    ActivityCompat.requestPermissions(this,
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION);
+                    return
+                }
+                fusedLocationClient.lastLocation.addOnCompleteListener { task->
+                    var location:Location? = task.result
+                    if(location == null){
+                        NewLocationData()
+                    }else{
+                        NewLocationData()
+                        latitude = location.latitude
+                        longitude = location.longitude
+                        var lon1 = Math.toRadians(longitudeT)
+                        var lon2 = Math.toRadians(longitude)
+                        var lat1 = Math.toRadians(latitudeT)
+                        var lat2 = Math.toRadians(latitude)
+
+                        var dlon = lon2 - lon1
+                        var dlat = lat2 - lat1
+
+                        var a = Math.pow(Math.sin(dlat / 2), 2.0)+ Math.cos(lat1) * Math.cos(lat2)* Math.pow(Math.sin(dlon / 2), 2.0)
+                        var c = 2 * Math.asin(Math.sqrt(a))
+                        var r = 6371
+                        var result = c*r
+                        resultInMeter = result*1000
+
+                        if (resultInMeter>= 100){
+                            Log.d("statusJarak","Gagal")
+                        }else
+                            Log.d("statusJarak","Berhasil")
+
+                        Log.d("userlocation", "Latitude: "+latitude+" Longtitude: "+longitude)
+                        Log.d("Distance","jarak = "+resultInMeter+" M")
+                    }
+                }
+            }else{
+                Toast.makeText(this,"Please Turn on Your device Location",Toast.LENGTH_SHORT).show()
+            }
+        }else{
+            RequestPermission()
+        }
+    }
+    fun NewLocationData(){
+        var locationRequest =  LocationRequest()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 0
+        locationRequest.fastestInterval = 0
+        locationRequest.numUpdates = 1
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // request permission
@@ -110,38 +173,36 @@ class Dashboard : AppCompatActivity(){
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION);
             return
         }
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location : Location? ->
-                // Got last known location. In some rare situations this can be null.
-                if (location != null) {
-                    latitude = location.latitude
-                }
-                if (location != null) {
-                    longitude = location.longitude
-                }
-                var lon1 = Math.toRadians(longitudeT)
-                var lon2 = Math.toRadians(longitude)
-                var lat1 = Math.toRadians(latitudeT)
-                var lat2 = Math.toRadians(latitude)
+        fusedLocationClient!!.requestLocationUpdates(
+            locationRequest,locationCallback, Looper.myLooper()
+        )
+    }
+    private val locationCallback = object : LocationCallback(){
+        override fun onLocationResult(locationResult: LocationResult) {
+            var lastLocation: Location = locationResult.lastLocation
+            Log.d("Debug:","your last last location: "+ lastLocation.longitude.toString())
+        }
+    }
+    private fun CheckPermission():Boolean{
+        if(
+            ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        ){
+            return true
+        }
 
-                var dlon = lon2 - lon1
-                var dlat = lat2 - lat1
-
-                var a = Math.pow(Math.sin(dlat / 2), 2.0)+ Math.cos(lat1) * Math.cos(lat2)* Math.pow(Math.sin(dlon / 2), 2.0)
-                var c = 2 * Math.asin(Math.sqrt(a))
-                var r = 6371
-                var result = c*r
-                resultInMeter = result*1000
-
-                if (resultInMeter>= 100){
-                    Log.d("statusJarak","Gagal")
-                }else
-                    Log.d("statusJarak","Berhasil")
-
-                Log.d("userlocation", "Latitude: "+latitude+" Longtitude: "+longitude)
-                Log.d("Distance","jarak = "+resultInMeter+" M")
-            }
-
+        return false
+    }
+    fun isLocationEnabled():Boolean{
+        var locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+    fun RequestPermission(){
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION,android.Manifest.permission.ACCESS_FINE_LOCATION),
+            REQUEST_LOCATION_PERMISSION
+        )
     }
     private fun openCamera() {
         val values = ContentValues()
@@ -159,7 +220,7 @@ class Dashboard : AppCompatActivity(){
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.size > 0 &&
                 grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLastKnownLocation()
+                getLastLocation()
             }
         }
         if (requestCode == PERMISSION_CODE ){
@@ -219,6 +280,7 @@ class Dashboard : AppCompatActivity(){
                                     applicationContext, // Context
                                     R.drawable.ic_baseline_image_24 // Drawable
                                 ))
+                                image_uri=null
                             }
                         }
                     })
