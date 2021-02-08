@@ -103,6 +103,7 @@ class Dashboard : AppCompatActivity(){
                     return@addOnCompleteListener
                     val intent = Intent(this, Dashboard::class.java)
                     startActivity(intent)
+                    finish()
 
                 } else
                     Toast.makeText(this, "Logout Succesfully", Toast.LENGTH_SHORT).show()
@@ -257,9 +258,6 @@ class Dashboard : AppCompatActivity(){
                             val imageUrl = it.toString()
                             val desc = editTextDescription.text.toString()
                             val loggedInUser = FirebaseAuth.getInstance().currentUser
-                            loggedInUser?.let {
-                                val email = loggedInUser.email
-                            }
                             val email = loggedInUser?.email
                             val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
                             val currentDate = sdf.format(Date()).toString()

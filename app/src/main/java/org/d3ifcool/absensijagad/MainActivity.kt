@@ -19,10 +19,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val loggedInUser = FirebaseAuth.getInstance().currentUser
+        val uid=loggedInUser?.uid.toString()
         if (loggedInUser!= null){
-            val intent = Intent(this, Dashboard::class.java)
-            startActivity(intent)
-            finish()
+            if (uid!="NMYBnrIESFbQzeCFlEuIznHi4lg2"){
+                val intent = Intent(this, Dashboard::class.java)
+                finish()
+                startActivity(intent)
+            }else{
+                val intent = Intent(this, DashboardAdmin::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
         registerTxt.setOnClickListener(View.OnClickListener {
             val intent = Intent(this, Register::class.java)
@@ -38,15 +45,23 @@ class MainActivity : AppCompatActivity() {
             }else{
                 FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener {
-                        if (!it.isSuccessful) {
-
-                            return@addOnCompleteListener
-                            val intent = Intent(this, MainActivity::class.java)
-                            startActivity(intent)
-
-                        } else
+                        if (it.isSuccessful) {
+                            val loggedInUser = FirebaseAuth.getInstance().currentUser
+                            val uid=loggedInUser?.uid.toString()
+                            Log.d("uidUser","uid-nya="+uid)
                             Toast.makeText(this, "Succesfully Login", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this, Dashboard::class.java)
+                            if (uid!="NMYBnrIESFbQzeCFlEuIznHi4lg2"){
+                                val intent = Intent(this, Dashboard::class.java)
+                                startActivity(intent)
+                                finish()
+                            }else{
+                                val intent = Intent(this, DashboardAdmin::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
+                        } else
+                        return@addOnCompleteListener
+                        val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                         finish()
                     }
