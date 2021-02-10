@@ -17,15 +17,18 @@
         android:layout_height="match_parent">
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/logout_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Button"
+            android:background="@drawable/roundbtnn"
+            android:text="LOGOUT"
+            android:textColor="#FFFFFF"
             map:layout_constraintBottom_toBottomOf="parent"
             map:layout_constraintEnd_toEndOf="parent"
-            map:layout_constraintHorizontal_bias="0.95"
+            map:layout_constraintHorizontal_bias="0.498"
             map:layout_constraintStart_toStartOf="parent"
-            map:layout_constraintTop_toTopOf="parent" />
+            map:layout_constraintTop_toTopOf="parent"
+            map:layout_constraintVertical_bias="0.959" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>

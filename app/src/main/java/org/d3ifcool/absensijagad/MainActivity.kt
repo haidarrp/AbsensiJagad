@@ -27,8 +27,9 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }else{
                 val intent = Intent(this, MapsActivity::class.java)
-                startActivity(intent)
                 finish()
+                startActivity(intent)
+
             }
         }
         registerTxt.setOnClickListener(View.OnClickListener {
@@ -52,18 +53,18 @@ class MainActivity : AppCompatActivity() {
                             Toast.makeText(this, "Succesfully Login", Toast.LENGTH_SHORT).show()
                             if (uid!="NMYBnrIESFbQzeCFlEuIznHi4lg2"){
                                 val intent = Intent(this, Dashboard::class.java)
-                                startActivity(intent)
                                 finish()
+                                startActivity(intent)
                             }else{
                                 val intent = Intent(this, MapsActivity::class.java)
-                                startActivity(intent)
                                 finish()
+                                startActivity(intent)
                             }
                         } else
                         return@addOnCompleteListener
                         val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
                         finish()
+                        startActivity(intent)
                     }
                     .addOnFailureListener {
                         Log.d("Main", "Failed Login: ${it.message}")

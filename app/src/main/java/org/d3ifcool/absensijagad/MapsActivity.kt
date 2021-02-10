@@ -3,8 +3,6 @@ package org.d3ifcool.absensijagad
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.Toast
 import com.firebase.ui.auth.AuthUI
 
@@ -14,6 +12,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.android.synthetic.main.activity_dashboard.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -26,6 +25,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+        logout_btn.setOnClickListener {
+            AuthUI.getInstance().signOut(this).addOnCompleteListener {
+                if (!it.isSuccessful) {
+                    return@addOnCompleteListener
+                    val intent = Intent(this, MapsActivity::class.java)
+                    finish()
+                    startActivity(intent)
+
+                } else
+                    Toast.makeText(this, "Logout Succesfully", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, MainActivity::class.java)
+                finish()
+                startActivity(intent)
+            }
+        }
     }
 
     /**
@@ -44,32 +58,5 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val sydney = LatLng(-34.0, 151.0)
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-    }
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.map_options, menu)
-        return true
-    }
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.logout_menu -> {
-            AuthUI.getInstance().signOut(this).addOnCompleteListener {
-                if (!it.isSuccessful) {
-                    return@addOnCompleteListener
-                    val intent = Intent(this, MapsActivity::class.java)
-                    startActivity(intent)
-                    finish()
-
-                } else
-                    Toast.makeText(this, "Logout Succesfully", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
-            true
-        }
-        R.id.refresh_menu -> {
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
     }
 }
