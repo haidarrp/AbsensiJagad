@@ -261,6 +261,7 @@ class Dashboard : AppCompatActivity(){
                             val email = loggedInUser?.email
                             val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
                             val currentDate = sdf.format(Date()).toString()
+                            val coordinate=
                             val user = Karyawan(imageUrl, desc, email , currentDate)
                             Log.d("cekpush", email+" "+currentDate)
                             val userId = ref.push().key.toString()
