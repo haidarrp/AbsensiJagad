@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
                 finish()
                 startActivity(intent)
             }else{
-                val intent = Intent(this, DashboardAdmin::class.java)
+                val intent = Intent(this, MapsActivity::class.java)
                 startActivity(intent)
                 finish()
             }
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
                                 startActivity(intent)
                                 finish()
                             }else{
-                                val intent = Intent(this, DashboardAdmin::class.java)
+                                val intent = Intent(this, MapsActivity::class.java)
                                 startActivity(intent)
                                 finish()
                             }
