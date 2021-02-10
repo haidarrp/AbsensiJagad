@@ -22,7 +22,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.location.LocationManagerCompat.isLocationEnabled
 import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.GoogleMap
@@ -261,7 +260,7 @@ class Dashboard : AppCompatActivity(){
                             val email = loggedInUser?.email
                             val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
                             val currentDate = sdf.format(Date()).toString()
-                            val user = Karyawan(imageUrl, desc, email , currentDate)
+                            val user = Karyawan(imageUrl, desc, email , currentDate, latitude,longitude)
                             Log.d("cekpush", email+" "+currentDate)
                             val userId = ref.push().key.toString()
 
