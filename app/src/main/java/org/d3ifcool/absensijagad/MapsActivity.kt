@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.activity_maps.*
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
+    private lateinit var newestCoord:LatLng
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,14 +44,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 if (!it.isSuccessful) {
                     return@addOnCompleteListener
                     val intent = Intent(this, MapsActivity::class.java)
-                    finish()
                     startActivity(intent)
+                    finish()
 
                 } else
                     Toast.makeText(this, "Logout Succesfully", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MainActivity::class.java)
-                finish()
                 startActivity(intent)
+                finish()
             }
         }
     }
@@ -65,11 +66,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-//
-//        // Add a marker in Sydney and move the camera
-//        val sydney = LatLng(-34.0, 151.0)
-//        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
     private fun getMapUpdate(){
         val rootRef = FirebaseDatabase.getInstance().reference
@@ -82,11 +78,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     val name = ds.child("name").getValue(String::class.java)
                     Log.d("getDataCoor","latitude= "+latitude+" longitude: "+longitude)
                     val userCoord = LatLng(latitude!!, longitude!!)
+                    newestCoord=userCoord
                     mMap.addMarker(MarkerOptions()
                         .position(userCoord)
                         .title(name)
                         )
                 }
+                val zoomLevel = 15f
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newestCoord,zoomLevel))
             }
 
             override fun onCancelled(error: DatabaseError) {

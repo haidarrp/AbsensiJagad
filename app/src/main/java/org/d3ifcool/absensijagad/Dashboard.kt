@@ -39,7 +39,7 @@ import java.util.*
 
 class Dashboard : AppCompatActivity(){
     lateinit var ref : DatabaseReference
-    private val PERMISSION_CODE = 1000;
+    private val PERMISSION_CODE = 1000
     private val IMAGE_CAPTURE_CODE = 1001
     var image_uri: Uri? = null
     private lateinit var loading:ProgressBar
@@ -57,6 +57,7 @@ class Dashboard : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        getLastLocation()
         ref = FirebaseDatabase.getInstance().getReference("USERS")
         capture_btn.setOnClickListener {
             //if system os is Marshmallow or Above, we need to request runtime permission
@@ -95,7 +96,7 @@ class Dashboard : AppCompatActivity(){
 
             }
         }
-        setting_btn.setOnClickListener {
+        setting_iv.setOnClickListener {
             val intent = Intent(this, UpdateProfile::class.java)
             startActivity(intent)
             finish()

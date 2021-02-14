@@ -60,11 +60,12 @@ class MainActivity : AppCompatActivity() {
                                 finish()
                                 startActivity(intent)
                             }
-                        } else
+                        } else{
                         return@addOnCompleteListener
                         val intent = Intent(this, MainActivity::class.java)
                         finish()
                         startActivity(intent)
+                        }
                     }
                     .addOnFailureListener {
                         Log.d("Main", "Failed Login: ${it.message}")
