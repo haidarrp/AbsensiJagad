@@ -17,6 +17,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -44,7 +45,7 @@ class Dashboard : AppCompatActivity(){
     private lateinit var loading:ProgressBar
     private lateinit var submit:Button
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var map: GoogleMap
+    private lateinit var setting:Button
     private val REQUEST_LOCATION_PERMISSION = 1
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
@@ -93,8 +94,11 @@ class Dashboard : AppCompatActivity(){
                 }
 
             }
-
-
+        }
+        setting_btn.setOnClickListener {
+            val intent = Intent(this, UpdateProfile::class.java)
+            startActivity(intent)
+            finish()
         }
         logout_btn.setOnClickListener {
             AuthUI.getInstance().signOut(this).addOnCompleteListener {
@@ -258,9 +262,10 @@ class Dashboard : AppCompatActivity(){
                             val desc = editTextDescription.text.toString()
                             val loggedInUser = FirebaseAuth.getInstance().currentUser
                             val email = loggedInUser?.email
+                            val name = loggedInUser?.displayName
                             val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
                             val currentDate = sdf.format(Date()).toString()
-                            val user = Karyawan(imageUrl, desc, email , currentDate, latitude,longitude)
+                            val user = Karyawan(imageUrl, desc, email, name , currentDate, latitude,longitude)
                             Log.d("cekpush", email+" "+currentDate)
                             val userId = ref.push().key.toString()
 

@@ -3,6 +3,7 @@ package org.d3ifcool.absensijagad
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.firebase.ui.auth.AuthUI
 
@@ -10,9 +11,17 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_dashboard.*
+import kotlinx.android.synthetic.main.activity_dashboard.logout_btn
+import kotlinx.android.synthetic.main.activity_maps.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -25,6 +34,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+        getMapUpdate()
+        refresh_btn.setOnClickListener {
+            getMapUpdate()
+        }
         logout_btn.setOnClickListener {
             AuthUI.getInstance().signOut(this).addOnCompleteListener {
                 if (!it.isSuccessful) {
@@ -52,10 +65,34 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+//
+//        // Add a marker in Sydney and move the camera
+//        val sydney = LatLng(-34.0, 151.0)
+//        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+    }
+    private fun getMapUpdate(){
+        val rootRef = FirebaseDatabase.getInstance().reference
+        val ref= rootRef.child("USERS")
+        val valueEventListener = object :ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (ds in snapshot.children){
+                    val latitude = ds.child("lat").getValue(Double::class.java)
+                    val longitude = ds.child("lng").getValue(Double::class.java)
+                    val name = ds.child("name").getValue(String::class.java)
+                    Log.d("getDataCoor","latitude= "+latitude+" longitude: "+longitude)
+                    val userCoord = LatLng(latitude!!, longitude!!)
+                    mMap.addMarker(MarkerOptions()
+                        .position(userCoord)
+                        .title(name)
+                        )
+                }
+            }
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("TAGerror", error.getMessage())
+            }
+        }
+        ref.addListenerForSingleValueEvent(valueEventListener)
     }
 }
