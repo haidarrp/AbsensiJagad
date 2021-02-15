@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.provider.MediaStore
+import android.provider.Settings
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
@@ -51,7 +52,7 @@ class Dashboard : AppCompatActivity(){
     private var longitude: Double = 0.0
     private var latitudeT: Double = -6.9527386
     private var longitudeT: Double = 107.6651714
-    private var resultInMeter=0.0
+    private var resultInMeter=101.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
