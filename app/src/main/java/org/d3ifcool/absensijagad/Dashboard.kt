@@ -265,7 +265,7 @@ class Dashboard : AppCompatActivity(){
                             val loggedInUser = FirebaseAuth.getInstance().currentUser
                             val email = loggedInUser?.email
                             val name = loggedInUser?.displayName
-                            val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+                            val sdf = SimpleDateFormat("dd/M/yyyy")
                             val currentDate = sdf.format(Date()).toString()
                             val user = Karyawan(imageUrl, desc, email, name , currentDate, latitude,longitude)
                             Log.d("cekpush", email+" "+currentDate)

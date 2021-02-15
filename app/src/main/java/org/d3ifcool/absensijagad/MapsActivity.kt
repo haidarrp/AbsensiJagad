@@ -22,6 +22,8 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.activity_dashboard.logout_btn
 import kotlinx.android.synthetic.main.activity_maps.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -67,6 +69,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
     }
+
     private fun getMapUpdate(){
         val rootRef = FirebaseDatabase.getInstance().reference
         val ref= rootRef.child("USERS")
@@ -76,13 +79,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     val latitude = ds.child("lat").getValue(Double::class.java)
                     val longitude = ds.child("lng").getValue(Double::class.java)
                     val name = ds.child("name").getValue(String::class.java)
-                    Log.d("getDataCoor","latitude= "+latitude+" longitude: "+longitude)
+                    var date = ds.child("date").getValue(String::class.java)
+                    val sdf = SimpleDateFormat("dd/M/yyyy")
+                    var currentDate = sdf.format(Date()).toString()
+                    date = date?.substring(0..1).toString()
+                    currentDate = currentDate.substring(0..1).toString()
+                    val parsedDate = date.toInt()
+                    val parsedCurDate = currentDate.toInt()
+                    Log.d("getDataCoor",date)
                     val userCoord = LatLng(latitude!!, longitude!!)
                     newestCoord=userCoord
-                    mMap.addMarker(MarkerOptions()
-                        .position(userCoord)
-                        .title(name)
+                    if (parsedCurDate-parsedDate==0){
+                        mMap.addMarker(MarkerOptions()
+                            .position(userCoord)
+                            .title(name)
                         )
+                    }
                 }
                 val zoomLevel = 15f
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newestCoord,zoomLevel))
